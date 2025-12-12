@@ -210,7 +210,7 @@ st.markdown("""
 @st.cache_data
 def load_data():
     try:
-        with open('data/recommender_data3.pkl', 'rb') as f:
+        with open('Data/recommender_data3.pkl', 'rb') as f:
             data = pickle.load(f)
         return data['df'], data['indices'], data['matrices']
     except FileNotFoundError:
