@@ -6,9 +6,9 @@
 ---
 
 <p align="center">
-  <img src="Data/screenshot1_app.png" alt="Screenshot 1" width="30%">
-  <img src="assets/screenshot2.png" alt="Screenshot 2" width="30%">
-  <img src="assets/screenshot3.png" alt="Screenshot 3" width="30%">
+  <img src="Data/screenshot1_app.png" alt="Screenshot 1" width="40%">
+  <img src="Data/screenshot2_app.png" alt="Screenshot 2" width="40%">
+  <img src="Data/screenshot3_app.png" alt="Screenshot 3" width="40%">
 </p>
 
 
@@ -60,7 +60,7 @@ A polished user interface featuring:
 
 ---
 
-## 🧠 System Architecture
+## System Architecture
 
 The core system is built upon a **weighted similarity matrix** that integrates three families of embeddings:
 
@@ -114,6 +114,6 @@ The core system is built upon a **weighted similarity matrix** that integrates t
 ## 👤 Author
 
 **Victor MICHELON**
-🔗 *LinkedIn / Portfolio link (optional)*  
+🔗 [*Portfolio*  ](https://github.com/Victor-MICHELON/Victor_MICHELON_Portfolio.github.io)
 
  
