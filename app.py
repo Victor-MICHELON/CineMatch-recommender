@@ -303,7 +303,7 @@ def get_recommendations(title):
 # ==============================================================================
 @lru_cache(maxsize=1024)
 def fetch_poster(movie_id):
-    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=f3b44d2ba65ebeee22e40bac40129d40"
+    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=
     try:
         data = requests.get(url, timeout=0.6).json()
         if data.get('poster_path'): return "https://image.tmdb.org/t/p/w500/" + data['poster_path']
