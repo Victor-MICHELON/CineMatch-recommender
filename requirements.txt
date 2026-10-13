@@ -1,8 +1,6 @@
-streamlit
-pandas
-numpy
-scikit-learn
-sentence-transformers
-tensorflow
-plotly
-requests
+# Dépendances de l'application (runtime). Versions testées en octobre 2026.
+streamlit>=1.50,<2
+pandas>=2.2,<4
+numpy>=1.26,<3
+plotly>=5.20,<8
+requests>=2.31,<3

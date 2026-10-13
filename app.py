@@ -1,12 +1,16 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-import pickle
-import requests
-import plotly.graph_objects as go
+import html
 import os
-from functools import lru_cache
-import time
+import pickle
+from pathlib import Path
+
+import plotly.graph_objects as go
+import requests
+import streamlit as st
+
+from recommender import recommend
+
+BASE_DIR = Path(__file__).parent
+DATA_DIR = BASE_DIR / "Data"
 
 # ==============================================================================
 # 0. CONFIGURATION & DESIGN
@@ -205,110 +209,82 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 1. CHARGEMENT OPTIMISÉ
+# 1. CHARGEMENT
 # ==============================================================================
-@st.cache_data
+# cache_resource (et non cache_data) : le pickle pèse ~600 Mo et cache_data
+# en ferait une copie à chaque rerun.
+@st.cache_resource(show_spinner=False)
 def load_data():
+    with open(DATA_DIR / "recommender_data3.pkl", "rb") as f:
+        data = pickle.load(f)
+    return data["df"], data["matrices"]
+
+
+try:
+    with st.spinner("🎬 Chargement de l'intelligence artificielle..."):
+        df, matrices = load_data()
+except Exception as exc:  # fichier absent, pointeur Git LFS non résolu, version de pandas incompatible...
+    st.error(
+        "Impossible de charger `Data/recommender_data3.pkl`. "
+        "Vérifiez que le fichier a bien été récupéré via Git LFS (`git lfs pull`).\n\n"
+        f"Détail : `{type(exc).__name__}: {exc}`"
+    )
+    st.stop()
+
+# Libellés uniques pour la recherche : plusieurs films partagent le même titre.
+LABELS = [
+    f"{t} ({int(y)})" if y > 0 else t
+    for t, y in zip(df["title"], df["year"])
+]
+
+# ==============================================================================
+# 2. API IMAGE (CACHÉE)
+# ==============================================================================
+NO_POSTER = (
+    "data:image/svg+xml;utf8,"
+    "<svg xmlns='http://www.w3.org/2000/svg' width='500' height='750'>"
+    "<rect width='100%' height='100%' fill='%23161b22'/>"
+    "<text x='50%' y='50%' fill='%23888' font-family='sans-serif' font-size='28' "
+    "text-anchor='middle'>No image</text></svg>"
+)
+
+
+def _tmdb_key():
+    key = os.environ.get("TMDB_API_KEY")
+    if key:
+        return key
     try:
-        with open('Data/recommender_data3.pkl', 'rb') as f:
-            data = pickle.load(f)
-        return data['df'], data['indices'], data['matrices']
-    except FileNotFoundError:
-        return None, None, None
+        return st.secrets.get("TMDB_API_KEY")
+    except Exception:  # pas de fichier secrets.toml
+        return None
 
-with st.spinner("🎬 Chargement de l'intelligence artificielle..."):
-    df, indices, matrices = load_data()
 
-if df is None: st.stop()
+@st.cache_data(ttl=24 * 3600, show_spinner=False)
+def _fetch_poster(movie_id: int, api_key: str) -> str:
+    # Lève en cas d'échec : st.cache_data ne mémorise pas les exceptions,
+    # une panne réseau ponctuelle n'est donc pas figée dans le cache.
+    resp = requests.get(
+        f"https://api.themoviedb.org/3/movie/{movie_id}",
+        params={"api_key": api_key},
+        timeout=3,
+    )
+    resp.raise_for_status()
+    path = resp.json().get("poster_path")
+    if not path:
+        raise LookupError("no poster")
+    return "https://image.tmdb.org/t/p/w500" + path
 
-# ==============================================================================
-# 2. MOTEUR INTELLIGENT (CORE)
-# ==============================================================================
 
-def get_smart_weights(movie_idx):
-    """Calcule les poids idéaux sans ralentir l'app."""
-    row = df.iloc[movie_idx]
-    
-    genres = set(row['genres_list']) if isinstance(row['genres_list'], list) else set()
-    lang = row.get('original_language', 'en')
-    vote_count = row.get('vote_count', 0)
-    
-    # Base
-    w = {
-        'Histoire': 0.15, 'Sujets': 0.25, 'Vibe': 0.15,
-        'Genre': 0.10, 'Casting': 0.10, 'Origine': 0.00,
-        'Popularité': 0.05, 'Public': 0.20
-    }
-    
-    # Adaptation Rapide
-    if 'Animation' in genres or any(char.isdigit() for char in row['title']):
-        w['Sujets'] += 0.15; w['Public'] += 0.10
-    if 'Horror' in genres:
-        w['Vibe'] += 0.20; w['Sujets'] += 0.10; w['Casting'] -= 0.05
-    if lang != 'en':
-        w['Origine'] += 0.30; w['Histoire'] -= 0.10
-    if vote_count > 3000:
-        w['Public'] += 0.15; w['Popularité'] += 0.05
-        
-    return w
-
-def get_recommendations(title):
-    idx = indices.get(title)
-    if idx is None: return [], {}
-    if isinstance(idx, pd.Series): idx = idx.iloc[0]
-
-    # 1. Poids Intelligents
-    weights = get_smart_weights(idx)
-    
-    # Mapping interne
-    key_map = {
-        'Histoire': 'sbert', 'Sujets': 'keywords', 'Vibe': 'vibe',
-        'Genre': 'genre', 'Casting': 'credits', 'Origine': 'origin',
-        'Popularité': 'context', 'Public': 'collab'
-    }
-
-    # 2. Cold Start Check
-    if matrices['collab'][idx].sum() == 0:
-        weights['Public'] = 0
-        bonus = 0.2 / 3
-        weights['Histoire'] += bonus; weights['Sujets'] += bonus; weights['Vibe'] += bonus
-
-    # 3. Calcul Vectoriel Rapide
-    scores = np.zeros(len(df))
-    for ui_key, val in weights.items():
-        if val > 0:
-            scores += val * matrices[key_map[ui_key]][idx]
-
-    # 4. Tri Optimisé
-    top_indices = np.argpartition(scores, -5)[-5:]
-    top_indices = top_indices[np.argsort(scores[top_indices])][::-1]
-    top_indices = [i for i in top_indices if i != idx][:4]
-    
-    results = []
-    total_w = sum(weights.values())
-    
-    for i in top_indices:
-        row = df.iloc[i]
-        norm_score = scores[i] / total_w if total_w > 0 else 0
-        results.append({
-            'id': row['id'], 'title': row['title'],
-            'year': int(row['year']) if row['year'] > 0 else '',
-            'director': row['director'], 'score': norm_score
-        })
-        
-    return results, weights
-
-# ==============================================================================
-# 3. API IMAGE (CACHÉE)
-# ==============================================================================
-@lru_cache(maxsize=1024)
-def fetch_poster(movie_id):
-    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=
+def fetch_poster(movie_id) -> str:
+    """URL de l'affiche TMDB, ou un placeholder si clé absente / film sans affiche."""
+    key = _tmdb_key()
+    if not key:
+        return NO_POSTER
     try:
-        data = requests.get(url, timeout=0.6).json()
-        if data.get('poster_path'): return "https://image.tmdb.org/t/p/w500/" + data['poster_path']
-    except: pass
-    return "https://via.placeholder.com/500x750/161b22/FFFFFF?text=No+Image"
+        return _fetch_poster(int(movie_id), key)
+    except Exception:
+        return NO_POSTER
+
 
 # ==============================================================================
 # 4. INTERFACE UTILISATEUR
@@ -316,10 +292,10 @@ def fetch_poster(movie_id):
 
 # --- SIDEBAR (Radar Chart) ---
 with st.sidebar:
-    icon_path = os.path.join("Data", "Icon_CineMatch.png")
-    
-    if os.path.exists(icon_path):
-        st.image(icon_path, width=120)
+    icon_path = DATA_DIR / "Icon_CineMatch.png"
+
+    if icon_path.exists():
+        st.image(str(icon_path), width=120)
     else:
         st.markdown("### 🎬 CineMatch")
         
@@ -330,12 +306,12 @@ with st.sidebar:
     st.info("💡 Le graphique radar montre comment le système pondère les critères pour optimiser vos recommandations.")
 
 # --- HEADER AVEC BANNIERE ---
-banner_path = os.path.join("data", "banner_CineMatch.png")
+banner_path = DATA_DIR / "Banner_CineMatch.png"
 
 c1, c2, c3 = st.columns([1, 2, 1])
 with c2:
-    if os.path.exists(banner_path):
-        st.image(banner_path, use_container_width=True)
+    if banner_path.exists():
+        st.image(str(banner_path), width="stretch")
     else:
         st.markdown("<h1 style='text-align: center;'>🎬 CineMatch AI</h1>", unsafe_allow_html=True)
 
@@ -349,24 +325,25 @@ if "search_triggered" not in st.session_state:
 col_search, col_btn = st.columns([4, 1])
 
 with col_search:
-    selected_movie = st.selectbox(
+    selected_idx = st.selectbox(
         "Rechercher un film...",
-        options=df['title'].values,
+        options=range(len(df)),
+        format_func=LABELS.__getitem__,
         index=None,
         placeholder="🔍 Tapez un titre (ex: Interstellar, Parasite, The Matrix...)",
         label_visibility="collapsed"
     )
 
 with col_btn:
-    if st.button("🚀 Lancer", use_container_width=True):
+    if st.button("🚀 Lancer", width="stretch"):
         st.session_state.search_triggered = True
 
 # --- LOGIQUE D'AFFICHAGE ---
-if selected_movie and st.session_state.search_triggered:
+if selected_idx is not None and st.session_state.search_triggered:
     
     with st.spinner("🎯 Analyse vectorielle en cours..."):
-        recos, active_weights = get_recommendations(selected_movie)
-        src_row = df[df['title'] == selected_movie].iloc[0]
+        recos, active_weights = recommend(df, matrices, selected_idx)
+        src_row = df.iloc[selected_idx]
 
     # --- RADAR CHART (SIDEBAR) ---
     with chart_placeholder:
@@ -400,43 +377,30 @@ if selected_movie and st.session_state.search_triggered:
             font=dict(color='white', size=11, family='Inter'), 
             showlegend=False
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
-    # --- HERO SECTION (Film Source) avec style inline ---
-    st.markdown("""
-    <div style='
-        background: rgba(20, 20, 20, 0.7);
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 24px;
-        margin: 20px 0;
-        border: 1px solid rgba(255, 107, 0, 0.2);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    '>
-    """, unsafe_allow_html=True)
-    
-    st.markdown(f"### 📡 Analyse basée sur : **{src_row['title']}**")
-    
-    col_poster, col_details = st.columns([1, 3])
-    with col_poster:
-        st.markdown("""
-        <div style='
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-        '>
-        """, unsafe_allow_html=True)
-        st.image(fetch_poster(src_row['id']), use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-    
-    with col_details:
-        st.markdown(f"**🎬 {int(src_row['year'])}** • 🎥 _{src_row['director']}_")
-        st.markdown("<br>", unsafe_allow_html=True)
-        overview_text = src_row['overview'][:320] + "..." if len(src_row['overview']) > 320 else src_row['overview']
-        st.markdown(f"<p style='color: #ccc; line-height: 1.7; font-size: 0.95rem;'>{overview_text}</p>", unsafe_allow_html=True)
-    
-    st.markdown("</div>", unsafe_allow_html=True)
-    
+    # --- HERO SECTION (Film Source) ---
+    # NB : un <div> ouvert dans un st.markdown n'enveloppe pas les widgets suivants
+    # (chaque appel est rendu isolément) ; on utilise donc un conteneur natif.
+    with st.container(border=True):
+        st.markdown(f"### 📡 Analyse basée sur : **{src_row['title']}**")
+
+        col_poster, col_details = st.columns([1, 3])
+        with col_poster:
+            st.image(fetch_poster(src_row['id']), width="stretch")
+
+        with col_details:
+            year = f"**🎬 {int(src_row['year'])}** • " if src_row['year'] > 0 else ""
+            director = f"🎥 _{src_row['director']}_" if src_row['director'] else ""
+            st.markdown(year + director)
+            overview = src_row['overview'] if isinstance(src_row['overview'], str) else ""
+            if len(overview) > 320:
+                overview = overview[:320] + "..."
+            st.markdown(
+                f"<p style='color: #ccc; line-height: 1.7; font-size: 0.95rem;'>{html.escape(overview) or 'Synopsis indisponible.'}</p>",
+                unsafe_allow_html=True,
+            )
+
     st.markdown("---")
     
     # --- RECOMMANDATIONS (GRID) ---
@@ -449,8 +413,12 @@ if selected_movie and st.session_state.search_triggered:
             movie = recos[idx]
             with col:
                 poster = fetch_poster(movie['id'])
+                title = html.escape(movie['title'])
+                director = html.escape(movie['director'])
+                director = director if len(director) <= 15 else director[:15] + '…'
+                year = movie['year'] or '—'
                 score = int(movie['score'] * 100)
-                if score > 99: score = 99
+                score = min(score, 99)
                 
                 # Cartes avec HTML inline pour compatibilité totale
                 st.markdown(f"""
@@ -489,7 +457,7 @@ if selected_movie and st.session_state.search_triggered:
                             overflow: hidden;
                             text-overflow: ellipsis;
                             color: #fff;
-                        ' title="{movie['title']}">{movie['title']}</div>
+                        ' title="{title}">{title}</div>
                         <div style='
                             font-size: 0.85rem;
                             color: #999;
@@ -499,8 +467,8 @@ if selected_movie and st.session_state.search_triggered:
                             margin-bottom: 14px;
                             font-weight: 500;
                         '>
-                            <span>📅 {movie['year']}</span>
-                            <span style="font-size:0.8rem; opacity:0.9">🎥 {movie['director'][:15]}..</span>
+                            <span>📅 {year}</span>
+                            <span style="font-size:0.8rem; opacity:0.9">🎥 {director}</span>
                         </div>
                         <div style='
                             width: 100%;

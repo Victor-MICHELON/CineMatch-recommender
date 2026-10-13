@@ -1,7 +1,19 @@
-# Ignorer l'environnement virtuel
+# Environnements virtuels et secrets
 venv/
+.venv/
 .env
+.streamlit/secrets.toml
 
-# Ignorer les caches Python
+# Caches Python / tests / notebooks
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Artefacts générés par le notebook
+sbert_embeddings.npy
+
+# macOS / éditeurs
+.DS_Store
+.idea/
+.vscode/
