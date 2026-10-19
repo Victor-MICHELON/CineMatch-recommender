@@ -1,0 +1,237 @@
+/* CineMatch : thème sombre (chargé par ui/components.py) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+/* Base (pas de sélecteur universel : il casserait les icônes Material des expanders) */
+.stApp, .stApp p, .stApp label, .stApp input, .stApp button, .stApp li, .stApp h1, .stApp h2, .stApp h3 {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Fond animé avec particules */
+.stApp {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0f 50%, #0a0a1a 100%) !important;
+    color: #e5e5e5 !important;
+}
+
+.stApp::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 107, 0, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(41, 98, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+    animation: breathe 8s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+}
+
+/* Sidebar Glassmorphism */
+[data-testid="stSidebar"] {
+    background: rgba(15, 17, 21, 0.95) !important;
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 107, 0, 0.15) !important;
+}
+
+[data-testid="stSidebar"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(180deg, rgba(255, 107, 0, 0.1) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
+    color: #ccc !important;
+}
+
+/* Selectbox Premium */
+[data-testid="stSelectbox"] > div > div {
+    background: rgba(31, 31, 31, 0.8) !important;
+    backdrop-filter: blur(10px);
+    color: white !important;
+    border: 1px solid rgba(255, 107, 0, 0.3) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease !important;
+    font-size: 1rem !important;
+}
+
+[data-testid="stSelectbox"] > div > div:hover {
+    border-color: rgba(255, 107, 0, 0.6) !important;
+    box-shadow: 0 0 20px rgba(255, 107, 0, 0.2) !important;
+    transform: translateY(-2px);
+}
+
+/* Dropdown options */
+[data-baseweb="popover"] {
+    background: rgba(20, 20, 20, 0.98) !important;
+    backdrop-filter: blur(15px);
+}
+
+[data-baseweb="select"] ul {
+    background: rgba(20, 20, 20, 0.98) !important;
+}
+
+[data-baseweb="select"] li {
+    background: transparent !important;
+    color: white !important;
+}
+
+[data-baseweb="select"] li:hover {
+    background: rgba(255, 107, 0, 0.2) !important;
+}
+
+/* Bouton Lancer Premium */
+.stButton > button {
+    background: linear-gradient(135deg, #FF6B00 0%, #E65100 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    font-size: 1.05rem !important;
+    padding: 14px 28px !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    box-shadow: 0 6px 20px rgba(255, 107, 0, 0.4) !important;
+    width: 100% !important;
+    height: 56px !important;
+}
+
+.stButton > button:hover {
+    transform: translateY(-3px) scale(1.03) !important;
+    box-shadow: 0 10px 30px rgba(255, 107, 0, 0.6) !important;
+}
+
+.stButton > button:active {
+    transform: translateY(-1px) scale(1.01) !important;
+}
+
+/* Titres avec gradient animé */
+h1 {
+    font-weight: 800 !important;
+    background: linear-gradient(135deg, #FF6B00, #ffffff, #2962FF);
+    background-size: 200% 200%;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    animation: gradientShift 5s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+h2, h3 {
+    color: #fff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 2px 8px rgba(255, 107, 0, 0.3);
+}
+
+/* Divider stylisé */
+hr {
+    border: none !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 107, 0, 0.4), transparent) !important;
+    margin: 30px 0 !important;
+}
+
+/* Conteneur principal */
+.main > div {
+    padding-top: 2rem;
+}
+
+/* Spinner */
+[data-testid="stSpinner"] > div {
+    border-top-color: #FF6B00 !important;
+}
+
+/* Images */
+[data-testid="stImage"] {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Markdown containers */
+[data-testid="stMarkdownContainer"] {
+    color: #e5e5e5 !important;
+}
+
+/* Info box */
+[data-testid="stAlert"] {
+    background: rgba(41, 98, 255, 0.15) !important;
+    backdrop-filter: blur(10px);
+    border-left: 4px solid #2962FF !important;
+    border-radius: 8px;
+    color: #ccc !important;
+}
+
+/* Columns gap */
+[data-testid="column"] {
+    padding: 0 8px;
+}
+
+/* Cartes de recommandation */
+.cm-card {
+    background: rgba(24, 24, 24, 0.8);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(51, 51, 51, 0.6);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    margin-bottom: 18px;
+}
+.cm-poster { position: relative; overflow: hidden; }
+.cm-poster img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; display: block; }
+.cm-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: linear-gradient(135deg, #FF6B00, #E65100);
+    color: #fff; padding: 6px 12px; border-radius: 8px;
+    font-size: 0.8rem; font-weight: 800; letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(255, 107, 0, 0.6);
+}
+.cm-body { padding: 16px; }
+.cm-title {
+    font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cm-meta {
+    display: flex; justify-content: space-between; gap: 8px;
+    font-size: 0.85rem; color: #aaa; margin-bottom: 10px; font-weight: 500;
+}
+.cm-meta span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cm-why { font-size: 0.8rem; color: #ddd; margin-bottom: 12px; min-height: 2.4em; }
+.cm-why b { color: #FF8F00; font-weight: 600; }
+.cm-bar { width: 100%; background: rgba(51, 51, 51, 0.6); height: 6px; border-radius: 3px; overflow: hidden; }
+.cm-bar > div {
+    height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, #FF6B00, #FF8F00);
+    box-shadow: 0 0 10px rgba(255, 107, 0, 0.6);
+}
+.cm-links { margin-top: 12px; display: flex; gap: 14px; font-size: 0.8rem; }
+.cm-links a { color: #FF8F00 !important; text-decoration: none; font-weight: 600; }
+.cm-links a:hover, .cm-links a:focus { text-decoration: underline; }
+
+/* Synopsis du film source */
+.cm-overview { color: #ccc; line-height: 1.7; font-size: 0.95rem; }
+.cm-chips { color: #aaa; font-size: 0.85rem; }
+
+/* État vide */
+.cm-empty {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 320px; padding: 24px; text-align: center;
+    background: rgba(20, 20, 20, 0.5); backdrop-filter: blur(15px);
+    border-radius: 20px; border: 2px dashed rgba(255, 107, 0, 0.3); margin: 40px 0;
+}
+.cm-empty h2 { color: #999 !important; font-size: 2rem; margin-bottom: 10px; }
+.cm-empty p { color: #aaa; font-size: 1.05rem; }
+.cm-empty b { color: #FF8F00; }

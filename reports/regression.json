@@ -1,0 +1,140 @@
+{
+  "n_films_compared": 50,
+  "k": 10,
+  "seed": 0,
+  "jaccard_top10_mean": 0.287,
+  "jaccard_top10_median": 0.292,
+  "signals": {
+    "sbert": {
+      "corr": 0.876,
+      "top20_overlap": 0.644
+    },
+    "keywords": {
+      "corr": 0.621,
+      "top20_overlap": 0.344
+    },
+    "vibe": {
+      "corr": 0.499,
+      "top20_overlap": 0.186
+    },
+    "genre": {
+      "corr": 0.853,
+      "top20_overlap": 0.26
+    },
+    "credits": {
+      "corr": 0.951,
+      "top20_overlap": 0.613
+    },
+    "origin": {
+      "corr": 0.912,
+      "top20_overlap": 0.205
+    },
+    "context": {
+      "corr": 0.765,
+      "top20_overlap": 0.186
+    },
+    "collab": {
+      "corr": 1.0,
+      "top20_overlap": 0.993
+    }
+  },
+  "load_before": {
+    "load_s": 0.2,
+    "max_rss_mb": 708
+  },
+  "load_after": {
+    "load_s": 0.11,
+    "max_rss_mb": 180
+  },
+  "size": {
+    "legacy_mb": 618.1,
+    "artifacts_mb": 12.2
+  },
+  "examples": [
+    {
+      "film": "Please Give",
+      "old": [
+        "Vamps",
+        "It's Kind of a Funny Story",
+        "City Island",
+        "The Joneses",
+        "Extract"
+      ],
+      "new": [
+        "Vamps",
+        "You Will Meet a Tall Dark Stranger",
+        "Florence Foster Jenkins",
+        "City Island",
+        "The Brass Teapot"
+      ]
+    },
+    {
+      "film": "The Greatest",
+      "old": [
+        "Polisse",
+        "The Young Unknowns",
+        "H.",
+        "Archaeology of a Woman",
+        "Lovely & Amazing"
+      ],
+      "new": [
+        "The Young Unknowns",
+        "The Sleepwalker",
+        "Archaeology of a Woman",
+        "Song One",
+        "The Poker House"
+      ]
+    },
+    {
+      "film": "Held",
+      "old": [
+        "The Blue Room",
+        "Intrusion",
+        "Nine Dead",
+        "Jade",
+        "The Strangers: Chapter 1"
+      ],
+      "new": [
+        "Adulterers",
+        "Fascination",
+        "The Blue Room",
+        "Nine Dead",
+        "Crowsnest"
+      ]
+    },
+    {
+      "film": "Faster",
+      "old": [
+        "Harry Brown",
+        "Drive Angry",
+        "Jonah Hex",
+        "Basic",
+        "The Punisher"
+      ],
+      "new": [
+        "Harry Brown",
+        "Drive Angry",
+        "Blood Work",
+        "Only God Forgives",
+        "The Last Stand"
+      ]
+    },
+    {
+      "film": "Scary Movie 2",
+      "old": [
+        "The Vatican Exorcisms",
+        "American Pie 2",
+        "EuroTrip",
+        "Scary Movie 4",
+        "Dude, Where's My Car?"
+      ],
+      "new": [
+        "American Pie 2",
+        "Scary Movie 4",
+        "A Haunted House 2",
+        "The Haunted Mansion",
+        "Dude, Where's My Car?"
+      ]
+    }
+  ]
+}

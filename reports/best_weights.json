@@ -1,0 +1,41 @@
+{
+  "base": {
+    "sbert": 0.0257,
+    "keywords": 0.1688,
+    "vibe": 0.0162,
+    "genre": 0.0142,
+    "credits": 0.0437,
+    "origin": 0.0581,
+    "context": 0.3944,
+    "collab": 0.2789
+  },
+  "franchise": {
+    "keywords": 0.15,
+    "collab": 0.1
+  },
+  "horror": {
+    "vibe": 0.2,
+    "keywords": 0.1,
+    "credits": -0.05
+  },
+  "foreign": {
+    "origin": 0.3,
+    "sbert": -0.1
+  },
+  "popular": {
+    "collab": 0.15,
+    "context": 0.05
+  },
+  "popular_min_votes": 3000,
+  "enabled_rules": [
+    "foreign",
+    "franchise",
+    "horror",
+    "popular"
+  ],
+  "cold_start_targets": [
+    "sbert",
+    "keywords",
+    "vibe"
+  ]
+}

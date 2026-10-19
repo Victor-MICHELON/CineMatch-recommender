@@ -1,0 +1,1045 @@
+{
+  "generated_at": "2026-10-19T20:47:55+00:00",
+  "seed": 42,
+  "protocol": {
+    "dataset": "MovieLens ml-latest-small, restreint au catalogue",
+    "split": "temporel par utilisateur, 80 % train / 20 % test",
+    "positive": "note >= 4",
+    "query": "jusqu'à 5 films aimés les plus récents du train par utilisateur",
+    "relevant": "films aimés dans la partie test",
+    "excluded_from_ranking": "film requête + films déjà notés dans le train",
+    "collab": "recalculé sur la partie train uniquement",
+    "users_split": "20% validation (poids), reste test (une seule passe)",
+    "cold_start": "simulé : signal collaboratif du film requête masqué, poids redistribué",
+    "bootstrap": "1000 tirages sur les utilisateurs, IC 95 %",
+    "n_val_queries": 581,
+    "n_test_queries": 2330,
+    "n_test_users": 472,
+    "catalog_size": 6195,
+    "catalog_cold_share": 0.4728
+  },
+  "tuning": {
+    "trials": 200,
+    "objective": "moyenne NDCG@10 standard et cold start (validation)",
+    "val_manual": 0.0361,
+    "val_tuned": 0.0554,
+    "best_base": {
+      "sbert": 0.0257,
+      "keywords": 0.1688,
+      "vibe": 0.0162,
+      "genre": 0.0142,
+      "credits": 0.0437,
+      "origin": 0.0581,
+      "context": 0.3944,
+      "collab": 0.2789
+    }
+  },
+  "methods": {
+    "Popularité": {
+      "standard": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0873,
+          "ci95": [
+            0.0741,
+            0.1013
+          ]
+        },
+        "hr@10": {
+          "mean": 0.3536,
+          "ci95": [
+            0.3136,
+            0.3968
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.1807,
+          "ci95": [
+            0.1535,
+            0.2085
+          ]
+        },
+        "p@4": {
+          "mean": 0.0835,
+          "ci95": [
+            0.0694,
+            0.0981
+          ]
+        },
+        "p@10": {
+          "mean": 0.0626,
+          "ci95": [
+            0.0531,
+            0.0723
+          ]
+        },
+        "r@4": {
+          "mean": 0.0348,
+          "ci95": [
+            0.0261,
+            0.0437
+          ]
+        },
+        "r@10": {
+          "mean": 0.0664,
+          "ci95": [
+            0.0549,
+            0.0789
+          ]
+        },
+        "coverage@10": 0.014,
+        "diversity@10": 0.8252,
+        "popularity_pct@10": 97.7
+      },
+      "cold_start": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0873,
+          "ci95": [
+            0.0741,
+            0.1013
+          ]
+        },
+        "hr@10": {
+          "mean": 0.3536,
+          "ci95": [
+            0.3136,
+            0.3968
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.1807,
+          "ci95": [
+            0.1535,
+            0.2085
+          ]
+        },
+        "p@4": {
+          "mean": 0.0835,
+          "ci95": [
+            0.0694,
+            0.0981
+          ]
+        },
+        "p@10": {
+          "mean": 0.0626,
+          "ci95": [
+            0.0531,
+            0.0723
+          ]
+        },
+        "r@4": {
+          "mean": 0.0348,
+          "ci95": [
+            0.0261,
+            0.0437
+          ]
+        },
+        "r@10": {
+          "mean": 0.0664,
+          "ci95": [
+            0.0549,
+            0.0789
+          ]
+        },
+        "coverage@10": 0.014,
+        "diversity@10": 0.8252,
+        "popularity_pct@10": 97.7
+      }
+    },
+    "Aléatoire": {
+      "standard": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0015,
+          "ci95": [
+            0.001,
+            0.0022
+          ]
+        },
+        "hr@10": {
+          "mean": 0.0142,
+          "ci95": [
+            0.0095,
+            0.0193
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.004,
+          "ci95": [
+            0.0023,
+            0.0058
+          ]
+        },
+        "p@4": {
+          "mean": 0.0016,
+          "ci95": [
+            0.0009,
+            0.0026
+          ]
+        },
+        "p@10": {
+          "mean": 0.0015,
+          "ci95": [
+            0.001,
+            0.002
+          ]
+        },
+        "r@4": {
+          "mean": 0.0004,
+          "ci95": [
+            0.0001,
+            0.0008
+          ]
+        },
+        "r@10": {
+          "mean": 0.0009,
+          "ci95": [
+            0.0005,
+            0.0014
+          ]
+        },
+        "coverage@10": 0.975,
+        "diversity@10": 0.8507,
+        "popularity_pct@10": 49.4
+      },
+      "cold_start": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0015,
+          "ci95": [
+            0.001,
+            0.0022
+          ]
+        },
+        "hr@10": {
+          "mean": 0.0142,
+          "ci95": [
+            0.0095,
+            0.0193
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.004,
+          "ci95": [
+            0.0023,
+            0.0058
+          ]
+        },
+        "p@4": {
+          "mean": 0.0016,
+          "ci95": [
+            0.0009,
+            0.0026
+          ]
+        },
+        "p@10": {
+          "mean": 0.0015,
+          "ci95": [
+            0.001,
+            0.002
+          ]
+        },
+        "r@4": {
+          "mean": 0.0004,
+          "ci95": [
+            0.0001,
+            0.0008
+          ]
+        },
+        "r@10": {
+          "mean": 0.0009,
+          "ci95": [
+            0.0005,
+            0.0014
+          ]
+        },
+        "coverage@10": 0.975,
+        "diversity@10": 0.8507,
+        "popularity_pct@10": 49.4
+      }
+    },
+    "SBERT seul": {
+      "standard": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0104,
+          "ci95": [
+            0.0082,
+            0.013
+          ]
+        },
+        "hr@10": {
+          "mean": 0.0511,
+          "ci95": [
+            0.0426,
+            0.0613
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.027,
+          "ci95": [
+            0.0211,
+            0.0335
+          ]
+        },
+        "p@4": {
+          "mean": 0.0093,
+          "ci95": [
+            0.0072,
+            0.0117
+          ]
+        },
+        "p@10": {
+          "mean": 0.0056,
+          "ci95": [
+            0.0046,
+            0.0068
+          ]
+        },
+        "r@4": {
+          "mean": 0.0056,
+          "ci95": [
+            0.0039,
+            0.0075
+          ]
+        },
+        "r@10": {
+          "mean": 0.0071,
+          "ci95": [
+            0.0053,
+            0.0093
+          ]
+        },
+        "coverage@10": 0.6594,
+        "diversity@10": 0.6474,
+        "popularity_pct@10": 54.9
+      },
+      "cold_start": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0104,
+          "ci95": [
+            0.0082,
+            0.013
+          ]
+        },
+        "hr@10": {
+          "mean": 0.0511,
+          "ci95": [
+            0.0426,
+            0.0613
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.027,
+          "ci95": [
+            0.0211,
+            0.0335
+          ]
+        },
+        "p@4": {
+          "mean": 0.0093,
+          "ci95": [
+            0.0072,
+            0.0117
+          ]
+        },
+        "p@10": {
+          "mean": 0.0056,
+          "ci95": [
+            0.0046,
+            0.0068
+          ]
+        },
+        "r@4": {
+          "mean": 0.0056,
+          "ci95": [
+            0.0039,
+            0.0075
+          ]
+        },
+        "r@10": {
+          "mean": 0.0071,
+          "ci95": [
+            0.0053,
+            0.0093
+          ]
+        },
+        "coverage@10": 0.6594,
+        "diversity@10": 0.6474,
+        "popularity_pct@10": 54.9
+      }
+    },
+    "Collaboratif seul": {
+      "standard": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0823,
+          "ci95": [
+            0.0742,
+            0.0909
+          ]
+        },
+        "hr@10": {
+          "mean": 0.3519,
+          "ci95": [
+            0.3246,
+            0.3779
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.1534,
+          "ci95": [
+            0.1383,
+            0.169
+          ]
+        },
+        "p@4": {
+          "mean": 0.0648,
+          "ci95": [
+            0.0574,
+            0.0725
+          ]
+        },
+        "p@10": {
+          "mean": 0.0555,
+          "ci95": [
+            0.0492,
+            0.0615
+          ]
+        },
+        "r@4": {
+          "mean": 0.0376,
+          "ci95": [
+            0.0325,
+            0.043
+          ]
+        },
+        "r@10": {
+          "mean": 0.0823,
+          "ci95": [
+            0.072,
+            0.0937
+          ]
+        },
+        "coverage@10": 0.4052,
+        "diversity@10": 0.8212,
+        "popularity_pct@10": 80.9
+      },
+      "cold_start": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0036,
+          "ci95": [
+            0.0018,
+            0.0057
+          ]
+        },
+        "hr@10": {
+          "mean": 0.0343,
+          "ci95": [
+            0.0173,
+            0.0514
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.0077,
+          "ci95": [
+            0.004,
+            0.0125
+          ]
+        },
+        "p@4": {
+          "mean": 0.0038,
+          "ci95": [
+            0.0016,
+            0.007
+          ]
+        },
+        "p@10": {
+          "mean": 0.0036,
+          "ci95": [
+            0.0019,
+            0.0056
+          ]
+        },
+        "r@4": {
+          "mean": 0.0012,
+          "ci95": [
+            0.0002,
+            0.0032
+          ]
+        },
+        "r@10": {
+          "mean": 0.0027,
+          "ci95": [
+            0.0011,
+            0.0049
+          ]
+        },
+        "coverage@10": 0.0457,
+        "diversity@10": 0.8543,
+        "popularity_pct@10": 53.8
+      }
+    },
+    "Hybride, poids uniformes": {
+      "standard": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0421,
+          "ci95": [
+            0.037,
+            0.0478
+          ]
+        },
+        "hr@10": {
+          "mean": 0.224,
+          "ci95": [
+            0.2053,
+            0.2446
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.0878,
+          "ci95": [
+            0.0774,
+            0.0992
+          ]
+        },
+        "p@4": {
+          "mean": 0.0341,
+          "ci95": [
+            0.0292,
+            0.0392
+          ]
+        },
+        "p@10": {
+          "mean": 0.0283,
+          "ci95": [
+            0.0253,
+            0.0316
+          ]
+        },
+        "r@4": {
+          "mean": 0.0216,
+          "ci95": [
+            0.0175,
+            0.026
+          ]
+        },
+        "r@10": {
+          "mean": 0.0407,
+          "ci95": [
+            0.035,
+            0.0464
+          ]
+        },
+        "coverage@10": 0.4931,
+        "diversity@10": 0.7604,
+        "popularity_pct@10": 73.9
+      },
+      "cold_start": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0236,
+          "ci95": [
+            0.0198,
+            0.0272
+          ]
+        },
+        "hr@10": {
+          "mean": 0.1283,
+          "ci95": [
+            0.112,
+            0.1449
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.0561,
+          "ci95": [
+            0.0471,
+            0.0651
+          ]
+        },
+        "p@4": {
+          "mean": 0.02,
+          "ci95": [
+            0.0164,
+            0.0236
+          ]
+        },
+        "p@10": {
+          "mean": 0.0147,
+          "ci95": [
+            0.0127,
+            0.0168
+          ]
+        },
+        "r@4": {
+          "mean": 0.0121,
+          "ci95": [
+            0.0094,
+            0.0149
+          ]
+        },
+        "r@10": {
+          "mean": 0.0203,
+          "ci95": [
+            0.0167,
+            0.0239
+          ]
+        },
+        "coverage@10": 0.5603,
+        "diversity@10": 0.7388,
+        "popularity_pct@10": 66.9
+      }
+    },
+    "Hybride, poids de base sans règles": {
+      "standard": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0444,
+          "ci95": [
+            0.0393,
+            0.0499
+          ]
+        },
+        "hr@10": {
+          "mean": 0.2232,
+          "ci95": [
+            0.2031,
+            0.2443
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.0918,
+          "ci95": [
+            0.0808,
+            0.1035
+          ]
+        },
+        "p@4": {
+          "mean": 0.0362,
+          "ci95": [
+            0.0312,
+            0.0419
+          ]
+        },
+        "p@10": {
+          "mean": 0.0294,
+          "ci95": [
+            0.0263,
+            0.033
+          ]
+        },
+        "r@4": {
+          "mean": 0.022,
+          "ci95": [
+            0.0185,
+            0.026
+          ]
+        },
+        "r@10": {
+          "mean": 0.0424,
+          "ci95": [
+            0.0364,
+            0.0481
+          ]
+        },
+        "coverage@10": 0.4996,
+        "diversity@10": 0.7471,
+        "popularity_pct@10": 74.6
+      },
+      "cold_start": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0161,
+          "ci95": [
+            0.0131,
+            0.0193
+          ]
+        },
+        "hr@10": {
+          "mean": 0.0833,
+          "ci95": [
+            0.0708,
+            0.0966
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.0392,
+          "ci95": [
+            0.0319,
+            0.0473
+          ]
+        },
+        "p@4": {
+          "mean": 0.0137,
+          "ci95": [
+            0.0111,
+            0.0164
+          ]
+        },
+        "p@10": {
+          "mean": 0.0095,
+          "ci95": [
+            0.008,
+            0.0111
+          ]
+        },
+        "r@4": {
+          "mean": 0.0083,
+          "ci95": [
+            0.0061,
+            0.0109
+          ]
+        },
+        "r@10": {
+          "mean": 0.0131,
+          "ci95": [
+            0.0103,
+            0.0163
+          ]
+        },
+        "coverage@10": 0.6098,
+        "diversity@10": 0.7156,
+        "popularity_pct@10": 61.9
+      }
+    },
+    "Hybride actuel (base + règles)": {
+      "standard": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0571,
+          "ci95": [
+            0.0511,
+            0.0638
+          ]
+        },
+        "hr@10": {
+          "mean": 0.2755,
+          "ci95": [
+            0.2539,
+            0.2976
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.1144,
+          "ci95": [
+            0.102,
+            0.1278
+          ]
+        },
+        "p@4": {
+          "mean": 0.0458,
+          "ci95": [
+            0.04,
+            0.0522
+          ]
+        },
+        "p@10": {
+          "mean": 0.0384,
+          "ci95": [
+            0.0346,
+            0.0425
+          ]
+        },
+        "r@4": {
+          "mean": 0.0272,
+          "ci95": [
+            0.0228,
+            0.0316
+          ]
+        },
+        "r@10": {
+          "mean": 0.0551,
+          "ci95": [
+            0.0487,
+            0.0616
+          ]
+        },
+        "coverage@10": 0.4823,
+        "diversity@10": 0.7619,
+        "popularity_pct@10": 76.9
+      },
+      "cold_start": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0172,
+          "ci95": [
+            0.0141,
+            0.0205
+          ]
+        },
+        "hr@10": {
+          "mean": 0.091,
+          "ci95": [
+            0.0775,
+            0.1047
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.0414,
+          "ci95": [
+            0.0338,
+            0.0497
+          ]
+        },
+        "p@4": {
+          "mean": 0.0145,
+          "ci95": [
+            0.0116,
+            0.0174
+          ]
+        },
+        "p@10": {
+          "mean": 0.0105,
+          "ci95": [
+            0.0088,
+            0.0122
+          ]
+        },
+        "r@4": {
+          "mean": 0.0085,
+          "ci95": [
+            0.0064,
+            0.011
+          ]
+        },
+        "r@10": {
+          "mean": 0.014,
+          "ci95": [
+            0.0111,
+            0.017
+          ]
+        },
+        "coverage@10": 0.6113,
+        "diversity@10": 0.7156,
+        "popularity_pct@10": 62.3
+      }
+    },
+    "Hybride optimisé (Optuna)": {
+      "standard": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0695,
+          "ci95": [
+            0.0625,
+            0.0765
+          ]
+        },
+        "hr@10": {
+          "mean": 0.3176,
+          "ci95": [
+            0.2905,
+            0.3413
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.1347,
+          "ci95": [
+            0.1209,
+            0.1487
+          ]
+        },
+        "p@4": {
+          "mean": 0.0587,
+          "ci95": [
+            0.052,
+            0.0653
+          ]
+        },
+        "p@10": {
+          "mean": 0.0459,
+          "ci95": [
+            0.0412,
+            0.0505
+          ]
+        },
+        "r@4": {
+          "mean": 0.0369,
+          "ci95": [
+            0.0319,
+            0.0419
+          ]
+        },
+        "r@10": {
+          "mean": 0.0674,
+          "ci95": [
+            0.0591,
+            0.076
+          ]
+        },
+        "coverage@10": 0.4244,
+        "diversity@10": 0.8207,
+        "popularity_pct@10": 79.0
+      },
+      "cold_start": {
+        "n_queries": 2330,
+        "n_users": 472,
+        "ndcg@10": {
+          "mean": 0.0361,
+          "ci95": [
+            0.0318,
+            0.0409
+          ]
+        },
+        "hr@10": {
+          "mean": 0.191,
+          "ci95": [
+            0.1723,
+            0.2106
+          ]
+        },
+        "mrr@10": {
+          "mean": 0.0756,
+          "ci95": [
+            0.0659,
+            0.086
+          ]
+        },
+        "p@4": {
+          "mean": 0.0283,
+          "ci95": [
+            0.0244,
+            0.0328
+          ]
+        },
+        "p@10": {
+          "mean": 0.0236,
+          "ci95": [
+            0.021,
+            0.0264
+          ]
+        },
+        "r@4": {
+          "mean": 0.0177,
+          "ci95": [
+            0.0145,
+            0.0212
+          ]
+        },
+        "r@10": {
+          "mean": 0.0352,
+          "ci95": [
+            0.0304,
+            0.0401
+          ]
+        },
+        "coverage@10": 0.5061,
+        "diversity@10": 0.7857,
+        "popularity_pct@10": 71.9
+      }
+    }
+  },
+  "ablation": [
+    {
+      "label": "Histoire (sbert)",
+      "kind": "signal",
+      "key": "sbert",
+      "standard": 0.31,
+      "cold_start": 0.11
+    },
+    {
+      "label": "Sujets (keywords)",
+      "kind": "signal",
+      "key": "keywords",
+      "standard": 0.32,
+      "cold_start": 0.15
+    },
+    {
+      "label": "Ambiance (vibe)",
+      "kind": "signal",
+      "key": "vibe",
+      "standard": 0.36,
+      "cold_start": 0.14
+    },
+    {
+      "label": "Genre",
+      "kind": "signal",
+      "key": "genre",
+      "standard": 0.39,
+      "cold_start": 0.11
+    },
+    {
+      "label": "Casting (credits)",
+      "kind": "signal",
+      "key": "credits",
+      "standard": 0.01,
+      "cold_start": -0.12
+    },
+    {
+      "label": "Origine",
+      "kind": "signal",
+      "key": "origin",
+      "standard": 0.04,
+      "cold_start": 0.01
+    },
+    {
+      "label": "Époque & popularité (context)",
+      "kind": "signal",
+      "key": "context",
+      "standard": -0.47,
+      "cold_start": -0.31
+    },
+    {
+      "label": "Public (collab)",
+      "kind": "signal",
+      "key": "collab",
+      "standard": -3.74,
+      "cold_start": 0.0
+    },
+    {
+      "label": "Règle « franchise »",
+      "kind": "rule",
+      "key": "franchise",
+      "standard": -0.01,
+      "cold_start": 0.02
+    },
+    {
+      "label": "Règle « horror »",
+      "kind": "rule",
+      "key": "horror",
+      "standard": 0.04,
+      "cold_start": 0.0
+    },
+    {
+      "label": "Règle « foreign »",
+      "kind": "rule",
+      "key": "foreign",
+      "standard": 0.04,
+      "cold_start": 0.02
+    },
+    {
+      "label": "Règle « popular »",
+      "kind": "rule",
+      "key": "popular",
+      "standard": -1.27,
+      "cold_start": -0.14
+    }
+  ],
+  "versions": {
+    "python": "3.14.0",
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "scipy": "1.18.1",
+    "optuna": "5.0.0"
+  },
+  "runtime_s": 44.2
+}

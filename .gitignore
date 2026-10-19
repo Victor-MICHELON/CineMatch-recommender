@@ -7,11 +7,21 @@ venv/
 # Caches Python / tests / notebooks
 __pycache__/
 *.py[cod]
+*.egg-info/
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
 .ipynb_checkpoints/
 
-# Artefacts générés par le notebook
-sbert_embeddings.npy
+# Données brutes et artefacts générés (python -m pipeline.build), publiés en GitHub Release
+data/
+artifacts/
+artifacts.zip
+
+# Ancien format, conservé en local seulement pour scripts/compare_legacy.py
+assets/recommender_data3.pkl
+assets/recent_movies.csv
 
 # macOS / éditeurs
 .DS_Store

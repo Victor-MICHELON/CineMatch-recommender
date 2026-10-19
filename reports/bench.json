@@ -1,0 +1,14 @@
+{
+  "n_queries": 1000,
+  "n_movies": 6195,
+  "load_artifacts_s": 0.123,
+  "recommend_ms": {
+    "p50": 1.4,
+    "p95": 2.17
+  },
+  "recommend_mmr_ms": {
+    "p50": 1.8,
+    "p95": 3.55
+  },
+  "machine": "Darwin arm64, Python 3.14.0"
+}

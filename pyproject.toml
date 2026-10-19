@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cinematch"
+version = "2.0.0"
+description = "Hybrid, explainable movie recommender: 8 similarity signals, adaptive weights, cold-start aware."
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Victor MICHELON" }]
+requires-python = ">=3.12"
+# Plages compatibles ; les versions exactes testées sont figées dans requirements.txt (déploiement)
+dependencies = [
+    "streamlit>=1.50,<2",
+    "pandas>=2.2,<4",
+    "numpy>=2.0,<3",
+    "scipy>=1.13,<2",
+    "pyarrow>=17",
+    "plotly>=5.20,<8",
+    "requests>=2.31,<3",
+]
+
+[project.optional-dependencies]
+pipeline = ["scikit-learn>=1.4", "sentence-transformers>=3"]
+eval = ["scikit-learn>=1.4", "optuna>=4", "matplotlib>=3.8"]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "responses>=0.25",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "pandas-stubs",
+    "scipy-stubs",
+    "types-requests",
+    "pre-commit>=4",
+    "scikit-learn>=1.4",
+]
+
+[tool.setuptools]
+packages = ["cinematch", "ui", "pipeline", "evaluation"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "C4", "RUF", "S"]
+ignore = [
+    "RUF001", "RUF002", "RUF003",  # texte en français : apostrophes et guillemets typographiques voulus
+    "S101",                        # assert dans les tests
+    "S311",                        # aléatoire non cryptographique (baselines, bootstrap)
+    "S608",
+    "E501",                        # longueur gérée par ruff format ; chaînes longues tolérées
+    "C408",                        # dict(...) lisible pour les paramètres des vectoriseurs
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S"]
+"scripts/*" = ["S603"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["cinematch"]
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: tests d'intégration sur les vrais artefacts (python -m pipeline.build)"]
+filterwarnings = ["ignore:.*ScriptRunContext.*"]
+
+[tool.coverage.run]
+source = ["cinematch"]
